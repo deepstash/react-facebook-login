@@ -108,7 +108,7 @@ class FacebookLogin extends React.Component {
         xfbml,
         cookie,
       });
-      this.setStateIfMounted({isSdkLoaded: true});
+      this.setState({isSdkLoaded: true});
       if (autoLoad || this.isRedirectedFromFb()) {
         window.FB.getLoginStatus(this.checkLoginAfterRefresh);
       }
