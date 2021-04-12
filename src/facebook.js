@@ -140,6 +140,7 @@ class FacebookLogin extends React.Component {
       js.id = id;
       js.src = `https://connect.facebook.net/${language}/sdk.js`;
       fjs.parentNode.insertBefore(js, fjs);
+      this.setState({isSdkLoaded: true});
     })(document, 'script', 'facebook-jssdk');
   }
 
