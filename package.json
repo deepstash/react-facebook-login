@@ -65,5 +65,8 @@
     "plugins": [
       "transform-object-assign"
     ]
+  },
+  "dependencies": {
+    "node-gyp": "^8.0.0"
   }
 }
