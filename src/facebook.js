@@ -58,10 +58,14 @@ class FacebookLogin extends React.Component {
     responseType: 'code',
   };
 
-  state = {
-    isSdkLoaded: false,
-    isProcessing: false,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isSdkLoaded: false,
+      isProcessing: false,
+    };
+  }
+
 
   componentDidMount() {
     this._isMounted = true;
@@ -78,8 +82,9 @@ class FacebookLogin extends React.Component {
       document.body.appendChild(fbRoot);
     }
   }
+
   componentWillReceiveProps(nextProps) {
-    if (this.state.isSdkLoaded && nextProps.autoLoad && ! this.props.autoLoad) {
+    if (this.state.isSdkLoaded && nextProps.autoLoad && !this.props.autoLoad) {
       window.FB.getLoginStatus(this.checkLoginAfterRefresh);
     }
   }
@@ -95,7 +100,7 @@ class FacebookLogin extends React.Component {
   }
 
   setFbAsyncInit() {
-    const { appId, xfbml, cookie, version, autoLoad } = this.props;
+    const {appId, xfbml, cookie, version, autoLoad} = this.props;
     window.fbAsyncInit = () => {
       window.FB.init({
         version: `v${version}`,
@@ -103,7 +108,7 @@ class FacebookLogin extends React.Component {
         xfbml,
         cookie,
       });
-      this.setStateIfMounted({ isSdkLoaded: true });
+      this.setStateIfMounted({isSdkLoaded: true});
       if (autoLoad || this.isRedirectedFromFb()) {
         window.FB.getLoginStatus(this.checkLoginAfterRefresh);
       }
@@ -114,43 +119,46 @@ class FacebookLogin extends React.Component {
     const params = window.location.search;
     return (
       decodeParamForKey(params, 'state') === 'facebookdirect' && (decodeParamForKey(params, 'code') ||
-      decodeParamForKey(params, 'granted_scopes'))
+        decodeParamForKey(params, 'granted_scopes'))
     );
   }
 
   sdkLoaded() {
-    this.setState({ isSdkLoaded: true });
+    this.setState({isSdkLoaded: true});
   }
 
   loadSdkAsynchronously() {
-    const { language } = this.props;
+    const {language} = this.props;
     ((d, s, id) => {
       const element = d.getElementsByTagName(s)[0];
       const fjs = element;
       let js = element;
-      if (d.getElementById(id)) { return; }
-      js = d.createElement(s); js.id = id;
+      if (d.getElementById(id)) {
+        return;
+      }
+      js = d.createElement(s);
+      js.id = id;
       js.src = `https://connect.facebook.net/${language}/sdk.js`;
       fjs.parentNode.insertBefore(js, fjs);
     })(document, 'script', 'facebook-jssdk');
   }
 
   responseApi = (authResponse) => {
-    window.FB.api('/me', { locale: this.props.language, fields: this.props.fields }, (me) => {
+    window.FB.api('/me', {locale: this.props.language, fields: this.props.fields}, (me) => {
       Object.assign(me, authResponse);
       this.props.callback(me);
     });
   };
 
   checkLoginState = (response) => {
-    this.setStateIfMounted({ isProcessing: false });
+    this.setStateIfMounted({isProcessing: false});
     if (response.authResponse) {
       this.responseApi(response.authResponse);
     } else {
       if (this.props.onFailure) {
-        this.props.onFailure({ status: response.status });
+        this.props.onFailure({status: response.status});
       } else {
-        this.props.callback({ status: response.status });
+        this.props.callback({status: response.status});
       }
     }
   };
@@ -167,13 +175,23 @@ class FacebookLogin extends React.Component {
     if (!this.state.isSdkLoaded || this.state.isProcessing || this.props.isDisabled) {
       return;
     }
-    this.setState({ isProcessing: true });
-    const { scope, appId, onClick, returnScopes, responseType, redirectUri, disableMobileRedirect, authType, state } = this.props;
+    this.setState({isProcessing: true});
+    const {
+      scope,
+      appId,
+      onClick,
+      returnScopes,
+      responseType,
+      redirectUri,
+      disableMobileRedirect,
+      authType,
+      state
+    } = this.props;
 
     if (typeof onClick === 'function') {
       onClick(e);
       if (e.defaultPrevented) {
-        this.setState({ isProcessing: false });
+        this.setState({isProcessing: false});
         return;
       }
     }
@@ -194,7 +212,7 @@ class FacebookLogin extends React.Component {
     } else {
       if (!window.FB) {
         if (this.props.onFailure) {
-          this.props.onFailure({ status: 'facebookNotLoaded' });
+          this.props.onFailure({status: 'facebookNotLoaded'});
         }
 
         return;
@@ -204,14 +222,14 @@ class FacebookLogin extends React.Component {
         if (response.status === 'connected') {
           this.checkLoginState(response);
         } else {
-          window.FB.login(this.checkLoginState, { scope, return_scopes: returnScopes, auth_type: params.auth_type });
+          window.FB.login(this.checkLoginState, {scope, return_scopes: returnScopes, auth_type: params.auth_type});
         }
       });
     }
   };
 
   render() {
-    const { render } = this.props;
+    const {render} = this.props;
 
     if (!render) {
       throw new Error('ReactFacebookLogin requires a render prop to render');
