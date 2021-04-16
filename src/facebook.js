@@ -69,7 +69,6 @@ class FacebookLogin extends React.Component {
   componentDidMount() {
     this._isMounted = true;
     if (document.getElementById('facebook-jssdk')) {
-      this.sdkLoaded();
       return;
     }
     this.setFbAsyncInit();
