@@ -61,7 +61,6 @@ class FacebookLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSdkLoaded: false,
       isProcessing: false,
     };
   }
@@ -84,7 +83,7 @@ class FacebookLogin extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.state.isSdkLoaded && nextProps.autoLoad && !this.props.autoLoad) {
+    if (window.FB && nextProps.autoLoad && !this.props.autoLoad) {
       window.FB.getLoginStatus(this.checkLoginAfterRefresh);
     }
   }
@@ -108,7 +107,6 @@ class FacebookLogin extends React.Component {
         xfbml,
         cookie,
       });
-      this.setState({isSdkLoaded: true});
       if (autoLoad || this.isRedirectedFromFb()) {
         window.FB.getLoginStatus(this.checkLoginAfterRefresh);
       }
@@ -123,9 +121,6 @@ class FacebookLogin extends React.Component {
     );
   }
 
-  sdkLoaded() {
-    this.setState({isSdkLoaded: true});
-  }
 
   loadSdkAsynchronously() {
     const {language} = this.props;
@@ -140,7 +135,6 @@ class FacebookLogin extends React.Component {
       js.id = id;
       js.src = `https://connect.facebook.net/${language}/sdk.js`;
       fjs.parentNode.insertBefore(js, fjs);
-      this.setState({isSdkLoaded: true});
     })(document, 'script', 'facebook-jssdk');
   }
 
@@ -173,7 +167,7 @@ class FacebookLogin extends React.Component {
   };
 
   click = (e) => {
-    if (!this.state.isSdkLoaded || this.state.isProcessing || this.props.isDisabled) {
+    if (!window.FB || this.state.isProcessing || this.props.isDisabled) {
       return;
     }
     this.setState({isProcessing: true});
@@ -240,7 +234,6 @@ class FacebookLogin extends React.Component {
       onClick: this.click,
       isDisabled: !!this.props.isDisabled,
       isProcessing: this.state.isProcessing,
-      isSdkLoaded: this.state.isSdkLoaded,
     };
     return this.props.render(propsForRender);
   }
