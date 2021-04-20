@@ -114,6 +114,7 @@ class FacebookLogin extends React.Component {
 
   isRedirectedFromFb() {
     const params = window.location.search;
+    console.log(params)
     return (
       decodeParamForKey(params, 'state') === 'facebookdirect' && (decodeParamForKey(params, 'code') ||
         decodeParamForKey(params, 'granted_scopes'))
