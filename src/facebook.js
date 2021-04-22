@@ -106,9 +106,7 @@ class FacebookLogin extends React.Component {
         xfbml,
         cookie,
       });
-      console.log("Async init")
       if (autoLoad || this.isRedirectedFromFb()) {
-        console.log("Async init if")
         window.FB.getLoginStatus(this.checkLoginAfterRefresh);
       }
     };
@@ -116,7 +114,6 @@ class FacebookLogin extends React.Component {
 
   isRedirectedFromFb() {
     const params = window.location.search;
-    console.log(params)
     return (
       decodeParamForKey(params, 'state') === 'facebookdirect' && (decodeParamForKey(params, 'code') ||
         decodeParamForKey(params, 'granted_scopes'))
