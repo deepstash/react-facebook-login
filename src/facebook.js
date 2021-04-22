@@ -106,7 +106,9 @@ class FacebookLogin extends React.Component {
         xfbml,
         cookie,
       });
+      console.log("Async init")
       if (autoLoad || this.isRedirectedFromFb()) {
+        console.log("Async init if")
         window.FB.getLoginStatus(this.checkLoginAfterRefresh);
       }
     };
